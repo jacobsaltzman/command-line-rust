@@ -1,3 +1,5 @@
-# command-line-rust
+# Command-Line Rust
+### A Project-Based Primer for Writing Rust CLIs
 
-init commit
+```sh
+cd into each project to learn more
