@@ -20,3 +20,16 @@ pub fn get_args() -> MyResults<Config>{
   })
     
 }
+
+fn parse_positive_int(val: &str) -> Result<(), String> {
+  match val.parse::<usize>() {
+    Ok(n) => {
+      if n > 0 {
+        Ok(())
+      } else {
+        Err("Value must be positive".to_string())
+      }
+    }
+    Err(_) => Err("Value must be a number".to_string()),
+  }
+}
