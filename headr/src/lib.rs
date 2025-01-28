@@ -1,5 +1,5 @@
 use clap::{App, Arg};
-use std::error::Error;
+
 
 #[derive(Debug)]
 pub struct Config {
@@ -8,15 +8,32 @@ pub struct Config {
     pub bytes: Option<usize>,
 }
 
-pub fn get_args() -> MyResults<Config> {
-    let matches = App::new("headr")
-        .version("0.1.0")
-        .author("Your Name")
-        .about("A simple implementation of the head command");
+pub fn get_args() -> Result<Config, Box<dyn std::error::Error>> {
+  let matches = App::new("headr")
+      .version("0.1.0")
+      .author("Your Name")
+      .about("A simple implementation of the head command")
+      .arg(Arg::new("file")
+          .about("The file to read")
+          .required(true)
+          .index(1))
+      .arg(Arg::new("lines")
+          .about("Number of lines to read")
+          .short('n')
+          .long("lines")
+          .takes_value(true)
+          .default_value("10"))
+      .arg(Arg::new("bytes")
+          .about("Number of bytes to read")
+          .short('c')
+          .long("bytes")
+          .takes_value(true))
+      .get_matches();
+
     Ok(Config {
-        file: matches.value_of("file").unwrap().to_string(),
-        lines: matches.value_of("lines").unwrap().parse().unwrap(),
-        bytes: matches.value_of("bytes").unwrap().parse().unwrap(),
+      file: matches.values_of("file").unwrap().map(|s| s.to_string()).collect(),
+      lines: matches.value_of("lines").unwrap().parse()?,
+      bytes: matches.value_of("bytes").map(|v| v.parse().unwrap()),
     })
 }
 
